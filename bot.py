@@ -129,7 +129,10 @@ def send_image_by_tags(message):
         markup = types.InlineKeyboardMarkup()
         next_button = types.InlineKeyboardButton("Следующая картинка", callback_data=f"next|{booru}|{tags}|1")
         markup.add(next_button)
-        bot.send_photo(message.chat.id, image_url, reply_markup=markup)
+        if not (image_url.endswith("mp4") or "video" in image_url):
+            bot.send_photo(message.chat.id, image_url, reply_markup=markup)
+        else:
+            bot.send_video(message.chat.id, image_url, reply_markup=markup)
     else:
         bot.send_message(message.chat.id, "Картинка не найдена.")
 
