@@ -6,7 +6,6 @@ import zipfile
 import os
 import io
 import time
-from bs4 import BeautifulSoup
 
 API_TOKEN = os.environ.get("BB_KEY")
 bot = telebot.TeleBot(API_TOKEN)б
