@@ -90,8 +90,8 @@ def fetch_image_url(booru, tags, index=1, with_tags=False):
     try:
         response = requests.get(base_url, params=params)
         response.raise_for_status()
-        data = response.json()
         print(response.content)
+        data = response.json()
         
         if not data:
             print("nonedata")
