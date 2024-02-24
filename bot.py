@@ -86,6 +86,7 @@ def fetch_image_url(booru, tags, index=1, with_tags=False):
         "limit": 1,
         "pid": index
     }
+    print(params)
     
     try:
         response = requests.get(base_url, params=params)
