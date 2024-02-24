@@ -90,7 +90,6 @@ def fetch_image_url(booru, tags, index=1, with_tags=False):
     try:
         response = requests.get(base_url, params=params)
         response.raise_for_status()
-        print(response.content)
         data = response.json()
         
         if not data:
@@ -116,6 +115,7 @@ def fetch_image_url(booru, tags, index=1, with_tags=False):
             return None
     except Exception as e:
         print(repr(e))
+        print(response.content)
         print(data)
         return None
 
