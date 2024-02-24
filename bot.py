@@ -8,7 +8,7 @@ import io
 import time
 
 API_TOKEN = os.environ.get("BB_KEY")
-bot = telebot.TeleBot(API_TOKEN)б
+bot = telebot.TeleBot(API_TOKEN)
 
 def download_images(booru, tags, count):
     images = []
