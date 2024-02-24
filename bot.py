@@ -91,10 +91,10 @@ def fetch_image_url(booru, tags, index=1, with_tags=False):
         response = requests.get(base_url, params=params)
         response.raise_for_status()
         data = response.json()
+        print(response.content)
         
         if not data:
             print("nonedata")
-            print(response.content)
             return None
         
         if booru == "safebooru":
