@@ -123,7 +123,7 @@ def fetch_image_url(booru, tags, index=1, with_tags=False):
 @bot.message_handler(commands=['tags'])
 def send_image_by_tags(message):
     _, booru, tags = message.text.split(maxsplit=2)
-    tags = tags.replace(" ", ",")
+    tags = tags.replace(" ", "+")
     image_url = fetch_image_url(booru, tags)
     
     if image_url:
