@@ -46,7 +46,7 @@ def download_images(booru_name, tags, count):
 
 def create_zip(images):
     zip_buffer = io.BytesIO()
-    with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False) as zip_file:
+    with zipfile.ZipFile(zip_buffer, 'a', zipfile.ZIP_DEFLATED, False, 9) as zip_file:
         for i, (image_url, tags) in enumerate(images, start=1):
             image_content = requests.get(image_url).content
             zip_file.writestr(f"{i}.png", image_content)
@@ -58,7 +58,7 @@ def create_zip(images):
 def send_zip(message):
     print(message.text.split())
     _, booru, tags, count = message.text.split()
-    count = min(int(count), 40)
+    count = min(int(count), 70)
     tags = tags.replace("+", " ")
     images = download_images(booru, tags, count)
     
