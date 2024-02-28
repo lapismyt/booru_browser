@@ -53,7 +53,8 @@ def create_zip(images):
 
 @bot.message_handler(commands=['zip'])
 def send_zip(message):
-    _, booru, tags, count = message.text.split(maxsplit=3)
+    print(message.text.split())
+    _, booru, tags, count = message.text.split()
     count = min(int(count), 100)
     tags = tags.replace("+", " ")
     images = download_images(booru, tags, count)
