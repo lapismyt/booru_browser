@@ -29,7 +29,7 @@ def get_provider(booru_name):
     elif booru_name == "lolibooru":
         provider = Lolibooru()
     elif booru_name == "hypnohub":
-        provider = Hyonohub()
+        provider = Hypnohub()
     else:
         return None
     return provider
