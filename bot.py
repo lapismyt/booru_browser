@@ -7,6 +7,7 @@ import os
 import io
 import time
 import asyncio
+import requests
 
 API_TOKEN = os.environ.get("BB_KEY")
 bot = telebot.TeleBot(API_TOKEN)
