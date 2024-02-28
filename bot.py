@@ -58,7 +58,7 @@ def create_zip(images):
 def send_zip(message):
     print(message.text.split())
     _, booru, tags, count = message.text.split()
-    count = min(int(count), 100)
+    count = min(int(count), 40)
     tags = tags.replace("+", " ")
     images = download_images(booru, tags, count)
     
