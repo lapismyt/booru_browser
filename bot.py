@@ -111,10 +111,11 @@ def send_next_image(call):
         markup = types.InlineKeyboardMarkup()
         next_button = types.InlineKeyboardButton("Следующая картинка", callback_data=f"next|{booru}|{tags}|{index}")
         markup.add(next_button)
-        bot.edit_message_media(media=types.InputMediaPhoto(image_url),
-                               chat_id=call.message.chat.id,
-                               message_id=call.message.message_id,
-                               reply_markup=markup)
+        if image_url.endswith("mp4") or "video" in image_url:
+            bot.send_video(call.message.chat.id, image_url, reply_markup=markup)
+        else:
+            bot.send_photo(call.message.chat.id, image_url, reply_markup=markup)
+        bot.delete_message(call.message.chat.id, call.message.message_id)
     else:
         bot.answer_callback_query(call.id, "Больше картинок нет.")
 
