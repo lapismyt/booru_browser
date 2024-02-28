@@ -6,6 +6,7 @@ import zipfile
 import os
 import io
 import time
+import asyncio
 
 API_TOKEN = os.environ.get("BB_KEY")
 bot = telebot.TeleBot(API_TOKEN)
