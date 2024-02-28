@@ -74,7 +74,7 @@ def fetch_image_url(booru_name, tags, index=1, with_tags=False):
 
 @bot.message_handler(commands=["start"])
 def start_cmd(message):
-    msg = "Привет! Это бот для просмотра картинок на разных booru.\nnИспользование:\n/tags [booru] [теги]\n\nДоступные booru:\n- safebooru\n- gelbooru\n- rule34\n- danbooru\n- realbooru\n- yandere\n- lolibooru\n- hypnohub\n\nТеги пишутся в подобном стиле:\n1girl charlie_(brawl_stars) open_mouth"
+    msg = "Привет! Это бот для просмотра картинок на разных booru.\n\nИспользование:\n/tags [booru] [теги]\n\nДоступные booru:\n- safebooru\n- gelbooru\n- rule34\n- danbooru\n- realbooru\n- yandere\n- lolibooru\n- hypnohub\n\nТеги пишутся в подобном стиле:\n1girl charlie_(brawl_stars) open_mouth"
     bot.send_message(message.chat.id, msg)
 
 @bot.message_handler(commands=['tags'])
