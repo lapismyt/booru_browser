@@ -54,6 +54,7 @@ def create_zip(images):
 def send_zip(message):
     _, booru, tags, count = message.text.split(maxsplit=3)
     count = min(int(count), 100)
+    tags = tags.replace("+", " ")
     images = download_images(booru, tags, count)
     
     if images:
@@ -70,6 +71,29 @@ def fetch_image_url(booru_name, tags, index=1, with_tags=False):
     if with_tags:
         return data["file_url"], " ".join(data["tags"])
     return data["file_url"]
+
+@bot.message_handler(commands=["start"])
+def start_cmd(message):
+    msg = """
+    Привет! Это бот для просмотра картинок на разных booru.
+
+    Использование:
+    /tags [booru] [теги]
+    
+    Доступные booru:
+    - safebooru
+    - gelbooru
+    - rule34
+    - danbooru
+    - realbooru
+    - yandere
+    - lolibooru
+    - hypnohub
+
+    Теги пишутся в подобном стиле:
+    1girl charlie_(brawl_stars) open_mouth
+    """
+    bot.send_message(message.chat.id, msg)
 
 @bot.message_handler(commands=['tags'])
 def send_image_by_tags(message):
