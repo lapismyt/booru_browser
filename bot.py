@@ -38,7 +38,10 @@ def download_images(booru_name, tags, count):
     images = []
     for page in range(count):
         resp = fetch_image_url(booru_name, tags, index=page, with_tags=True)
-        images.append(resp)
+        if resp is None:
+            break
+        else:
+            images.append(resp)
     return images
 
 def create_zip(images):
@@ -69,10 +72,12 @@ def send_zip(message):
 def fetch_image_url(booru_name, tags, index=1, with_tags=False):
     provider = get_provider(booru_name)
     response = asyncio.run(provider.search(tags, limit=1, page=index))
-    data = resolve(response)[0]
+    data = resolve(response)
+    if data == []:
+        return None
     if with_tags:
-        return data["file_url"], " ".join(data["tags"])
-    return data["file_url"]
+        return data[0]["file_url"], " ".join(data[0]["tags"])
+    return data[0]["file_url"]
 
 @bot.message_handler(commands=["start"])
 def start_cmd(message):
