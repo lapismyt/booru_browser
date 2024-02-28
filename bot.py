@@ -1,6 +1,6 @@
 import telebot
 from telebot import types
-import requests
+from booru import resolve, Rule34, Danbooru, Gelbooru, Safebooru, Realbooru, Yandere, Lolibooru, Hypnohub
 from urllib.parse import urlencode
 import zipfile
 import os
@@ -10,38 +10,34 @@ import time
 API_TOKEN = os.environ.get("BB_KEY")
 bot = telebot.TeleBot(API_TOKEN)
 
-def download_images(booru, tags, count):
-    images = []
-    base_url = ""
-    if booru == "safebooru":
-        base_url = "https://safebooru.org/index.php"
-    elif booru == "gelbooru":
-        base_url = "https://gelbooru.com/index.php"
-    elif booru == "rule34":
-        base_url = "https://rule34.xxx/index.php"
+def get_provider(booru_name):
+    booru_name = booru_name.lower()
+    if booru_name == "safebooru":
+        provider = Safebooru()
+    elif booru_name == "gelbooru":
+        provider = Gelbooru()
+    elif booru_name == "rule34":
+        provider = Rule34()
+    elif booru_name == "danbooru":
+        provider = Danbooru()
+    elif booru_name == "realbooru":
+        provider = Realbooru()
+    elif booru_name == "yandere":
+        provider = Yandere()
+    elif booru_name == "lolibooru":
+        provider = Lolibooru()
+    elif booru_name == "hypnohub":
+        provider = Hyonohub()
     else:
         return None
-    
-    params = {
-        "page": "dapi",
-        "s": "post",
-        "q": "index",
-        "json": "1",
-        "limit": count,
-        "tags": tags
-    }
-    
-    try:
-        for x in range(1, count):
-            image = fetch_image_url(booru, tags, index=x, with_tags=True)
-            if image is None:
-                print("noneimage")
-                break
-            images.append(image)
-        return images
-    except Exception as e:
-        print(e)
-        return None
+    return provider
+
+def download_images(booru_name, tags, count):
+    images = []
+    for page in range(count):
+        resp = fetch_image_url(booru_name, tags, index=page, with_tags=True)
+        images.append(resp)
+    return images
 
 def create_zip(images):
     zip_buffer = io.BytesIO()
@@ -66,64 +62,17 @@ def send_zip(message):
         bot.send_message(message.chat.id, "Изображения не найдены или произошла ошибка.")
         print(images)
 
-def fetch_image_url(booru, tags, index=1, with_tags=False):
-    base_url = ""
-    if booru == "safebooru":
-        base_url = "https://safebooru.org/index.php"
-    elif booru == "gelbooru":
-        base_url = "https://gelbooru.com/index.php"
-    elif booru == "rule34":
-        base_url = "https://api.rule34.xxx/index.php"
-    else:
-        return None
-    
-    params = {
-        "page": "dapi",
-        "s": "post",
-        "q": "index",
-        "json": "1",
-        "tags": tags,
-        "limit": 1,
-        "pid": index
-    }
-    print(params)
-    
-    try:
-        response = requests.get(base_url, params=params)
-        response.raise_for_status()
-        data = response.json()
-        
-        if not data:
-            print("nonedata")
-            return None
-        
-        if booru == "safebooru":
-            directory = data[0]["directory"]
-            file = data[0]["image"]
-            if with_tags:
-                return f"https://safebooru.org/images/{directory}/{file}", data[0]["tags"]
-            return f"https://safebooru.org/images/{directory}/{file}"
-        elif booru == "gelbooru":
-            if with_tags:
-                return data["post"][0]["file_url"], data["post"][0]["tags"]
-            return data["post"][0]["file_url"]
-        elif booru == "rule34":
-            if with_tags:
-                return data[0]["file_url"], data[0]["tags"]
-            return data[0]["file_url"]
-        else:
-            print("nonebooru")
-            return None
-    except Exception as e:
-        print(repr(e))
-        print(response.content)
-        print(data)
-        return None
+def fetch_image_url(booru_name, tags, index=1, with_tags=False):
+    provider = get_provider(booru_name)
+    response = asyncio.run(provider.search(tags, limit=1, page=index))
+    data = resolve(response)[0]
+    if with_tags:
+        return data["file_url"], " ".join(data["tags"])
+    return data["file_url"]
 
 @bot.message_handler(commands=['tags'])
 def send_image_by_tags(message):
     _, booru, tags = message.text.split(maxsplit=2)
-    tags = tags.replace(" ", "+")
     image_url = fetch_image_url(booru, tags)
     
     if image_url:
